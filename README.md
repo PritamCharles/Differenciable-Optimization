@@ -3,8 +3,6 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/PritamCharles/Differentiable-Optimization"></a>
-
 <h3 align="center">Differentiable Optimization Project (School project)</h3>
 </div>
 
