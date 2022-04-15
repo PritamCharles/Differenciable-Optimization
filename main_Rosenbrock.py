@@ -4,6 +4,7 @@ rosenbrock = rf.RosebrockFunction()
 rosenbrock.curve()
 rosenbrock.levels_card(xmin=-5, xmax=5, ymin=-10, ymax=10, step=0.1)
 rosenbrock.levels_card(xmin=-5, xmax=5, ymin=-30, ymax=40, step=0.1)
+rosenbrock.plot_3D(xmin=-1, xmax=1, ymin=-1, ymax=1, step=0.1)
 
 # Vérifications avec le vecteur x = [1, 1]
 x = [1, 1]

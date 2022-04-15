@@ -3,10 +3,10 @@ import itertools
 from matplotlib import pyplot as plt
 
 
-class RosebrockFunction:
+class Function:
     # Définition de la fonction de Rosenbrock
-    def Rosenbrock_function(self, x1, x2):
-        return (x1 - 1) ** 2 + 10 * (x1 ** 2 - x2) ** 2
+    def g_function(self, x1, x2):
+        return x1 ** 2 + x2 ** 2 * (x2 ** 2 + 2)
 
     # Question q
     def curve(self):
@@ -14,17 +14,17 @@ class RosebrockFunction:
         Y = np.linspace(-10, 10, 200)
         Xv, Yv = np.meshgrid(X, Y)
 
-        values_Rosenbrock = []
+        values_g = []
         for i, j in itertools.zip_longest(X, Y, fillvalue=""):
             try:
-                value = self.Rosenbrock_function(i, j)
-                values_Rosenbrock.append(value)
+                value = self.g_function(i, j)
+                values_g.append(value)
             except TypeError:
                 pass
 
         plt.figure(figsize=(15, 9))
-        plt.plot(X, values_Rosenbrock, color="blue", label="Rosenbrock function")
-        plt.title("Rosenbrock function")
+        plt.plot(X, values_g, color="blue")
+        plt.title("Function")
         plt.xlabel("x")
         plt.ylabel("y")
         plt.legend()
@@ -39,7 +39,7 @@ class RosebrockFunction:
         X = np.linspace(xmin, xmax, subdivisions_x)
         Y = np.linspace(ymin, ymax, subdivisions_y)
         Xv, Yv = np.meshgrid(X, Y)
-        Zv = self.Rosenbrock_function(Xv, Yv)
+        Zv = self.g_function(Xv, Yv)
 
         plt.figure(figsize=(15, 9))
         h = plt.contour(Xv, Yv, Zv, [i for i in range(1, 6001, 50)])
@@ -56,7 +56,7 @@ class RosebrockFunction:
         X = np.linspace(xmin, xmax, subdivisions_x)
         Y = np.linspace(ymin, ymax, subdivisions_y)
         Xv, Yv = np.meshgrid(X, Y)
-        Zv = self.Rosenbrock_function(Xv, Yv)
+        Zv = self.g_function(Xv, Yv)
 
         fig = plt.figure(figsize=(15, 9))
         ax = fig.gca(projection='3d')
@@ -68,11 +68,10 @@ class RosebrockFunction:
 
     # Question z
     def evalFR(self, x):
-        return (x[0] - 1) ** 2 + 10 * (x[0] ** 2 - x[1]) ** 2
-
+        return x[0] ** 2 + x[1] ** 2 * (x[1] ** 2 + 2)
 
     def gradFR(self, x):
-        return np.array([2 * (x[0] - 1) + 40 * ((x[0] ** 2) - x[1]) * x[0], -20 * (x[0] ** 2 - x[1])])
+        return np.array([2 * x[0], -20 * (4 * x[1] ** 3 + 4 * x[1])])
 
     def HessianFR(self, x):
-        return np.array([[2 + 120 * x[0] - 40 * x[1], -40 * x[0]], [-40 * x[0], 20 * x[1]]])
+        return np.array([[2, 0], [0, 12 * x[1] ** 2 + 4]])
