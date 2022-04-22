@@ -1,11 +1,13 @@
 import numpy as np
+import RosenbrockFunction as rf
 
 
 class Gradients:
-    def __init__(self, step, epsilon, Nitermax, maxIt):
+    def __init__(self, step, epsilonR, epsilon, nmax, maxIt):
         self.step_fixed = step
+        self.epsilonR = epsilonR
         self.epsilon = epsilon
-        self.Nitermax = Nitermax
+        self.nmax = nmax
         self.maxIt = maxIt
 
     def calculate_gradient(self, X):
@@ -31,15 +33,15 @@ class Gradients:
         return A
 
     def get_optimal_step(self, xi, di, rho_j):
-        j = 1
-        rho_j_1 = 10 * rho_j
+        iteration = 1
+        rho_jmoins1 = 10 * rho_j
 
-        while (np.linalg.norm(rho_j - rho_j_1) > self.epsilon) and (j < self.maxIt):
-            phi_p = np.dot(di.T, self.calculate_gradient(xi + rho_j * di))
-            phi_pp = np.dot(np.dot(di.T, self.calculate_hessian(xi + rho_j * di)), di)
-            rho_j_1 = rho_j
-            rho_j = rho_j - (phi_p / phi_pp)
-            j = j + 1
+        while (np.linalg.norm(rho_j - rho_jmoins1) > self.epsilonR) and (iteration < self.maxIt):
+            phi_p = np.dot(di.T, self.rosenbrock.gradFR(xi + rho_j * di))
+            phi_pp = np.dot(np.dot(di.T, self.rosenbrock.HessianFR(xi + rho_j * di)), di)
+            rho_jmoins1 = rho_j
+            rho_j -= (phi_p / phi_pp)
+            iteration += 1
 
         rho_opt = rho_j
 
@@ -55,10 +57,10 @@ class Gradients:
         return self.get_optimal_step(xi, di, rho_j) * (- self.calculate_gradient(x))
 
     def fixed_step_gradient_descent(self, x0):
-        iteration = 0
+        iteration = 1
         xi = x0
         di = self.calculate_gradient(xi)
-        while (np.linalg.norm(di) > self.epsilon) and (iteration < self.Nitermax):
+        while (np.linalg.norm(di) > self.epsilon) and (iteration < self.nmax):
             xi += self.fixed_step_gradient(xi)
             di = self.calculate_gradient(xi)
             iteration += 1
@@ -66,9 +68,9 @@ class Gradients:
         return xi
 
     def optimal_step_gradient_descent(self, x0, rho_0):
-        iteration = 0
+        iteration = 1
         xi = x0
-        while (np.linalg.norm(self.calculate_gradient(xi)) > self.epsilon) and (iteration < self.maxIt):
+        while (np.linalg.norm(self.calculate_gradient(xi)) > self.epsilon) and (iteration < self.nmax):
             di = - self.calculate_gradient(xi)
             rho_opt = self.get_optimal_step(xi, di, rho_0)
             xi += rho_opt * di
@@ -77,12 +79,12 @@ class Gradients:
         return xi
 
 
-#x0 = np.array([1, 2], dtype=float)
-#test = Gradients(step=10 ** -3, epsilon=10 ** -8, Nitermax=10 ** 4)
-#print(test.fixed_step_gradient_descent(x0))  # [1, 1] environ
+x0 = np.array([1, 2], dtype=float)
+test = Gradients(step=10 ** -3, epsilonR=10 ** -8, epsilon=10 ** (-4), nmax = 10 ** 5, maxIt= 10 ** 4)
+print(test.fixed_step_gradient_descent(x0))  # [1, 1] environ
 
-#x0 = np.array([1, 2], dtype=float)
-#rho_0 = 10 ** (-3)
-#test = Gradients(step=10 ** -3, epsilon=10 ** -8, Nitermax=10 ** 4, maxIt=10 ** 4)
-#print(test.optimal_step_gradient_descent(x0, rho_0))  # [1, 1]
+x0 = np.array([1, 2], dtype=float)
+rho_0 = 10 ** (-3)
+test = Gradients(step=10 ** -3, epsilonR=10 ** -8, epsilon=10 ** (-4), nmax = 10 ** 5, maxIt=10 ** 4)
+print(test.optimal_step_gradient_descent(x0, rho_0))  # [1, 1]
 
