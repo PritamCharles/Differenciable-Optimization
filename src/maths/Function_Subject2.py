@@ -3,10 +3,10 @@ import itertools
 from matplotlib import pyplot as plt
 
 
-class RosebrockFunction:
-    # Définition de la fonction de Rosenbrock
-    def Rosenbrock_function(self, x1, x2):
-        return (x1 - 1) ** 2 + 10 * (x1 ** 2 - x2) ** 2
+class GFunction:
+    # Définition de la fonction de g
+    def project_function(self, x1, x2):
+        return (x1 ** 2 + x2 - 11) ** 2 + (x1 + x2 ** 2 - 7) ** 2
 
     # Question q
     def curve(self):
@@ -17,14 +17,14 @@ class RosebrockFunction:
         values_Rosenbrock = []
         for i, j in itertools.zip_longest(X, Y, fillvalue=""):
             try:
-                value = self.Rosenbrock_function(i, j)
+                value = self.project_function(i, j)
                 values_Rosenbrock.append(value)
             except TypeError:
                 pass
 
         plt.figure(figsize=(15, 9))
         plt.plot(X, values_Rosenbrock, color="blue", label="Rosenbrock function")
-        plt.title("Rosenbrock function")
+        plt.title("Project function")
         plt.xlabel("x")
         plt.ylabel("y")
         plt.legend()
@@ -39,12 +39,14 @@ class RosebrockFunction:
         X = np.linspace(xmin, xmax, subdivisions_x)
         Y = np.linspace(ymin, ymax, subdivisions_y)
         Xv, Yv = np.meshgrid(X, Y)
-        Zv = self.Rosenbrock_function(Xv, Yv)
+        Zv = self.project_function(Xv, Yv)
 
         plt.figure(figsize=(15, 9))
         h = plt.contour(Xv, Yv, Zv, [i for i in range(1, 6001, 50)])
         # plt.clabel(h, inline=1, fontsize=10, fmt='%3.2f')
-        plt.title("Carte de niveaux de la fonction de Rosenbrock")
+        plt.title("Carte de niveaux de la fonction g")
+        plt.xlabel("x")
+        plt.ylabel("y")
         plt.legend()
         plt.grid()
         plt.show()
@@ -56,7 +58,7 @@ class RosebrockFunction:
         X = np.linspace(xmin, xmax, subdivisions_x)
         Y = np.linspace(ymin, ymax, subdivisions_y)
         Xv, Yv = np.meshgrid(X, Y)
-        Zv = self.Rosenbrock_function(Xv, Yv)
+        Zv = self.project_function(Xv, Yv)
 
         fig = plt.figure(figsize=(15, 9))
         ax = fig.gca(projection='3d')
@@ -67,12 +69,11 @@ class RosebrockFunction:
         plt.show()
 
     # Question z
-    def evalFR(self, x):
-        return (x[0] - 1) ** 2 + 10 * (x[0] ** 2 - x[1]) ** 2
+    def evalG(self, x):
+        return (x[0] ** 2 - x[1] - 11) ** 2 + (x[1] ** 2 + x[1] ** 2 - 7) ** 2
 
+    def gradG(self, x):
+        return np.array([4 * x[0] * (x[0] ** 2 + x[1] - 11) + 2 * (x[0] + x[1] ** 2 - 7), 2 * (x[0] ** 2 + x[1] - 11) + 4 * x[1] * (x[0] + x[1] ** 2 - 7)])
 
-    def gradFR(self, x):
-        return np.array([2 * (x[0] - 1) + 40 * ((x[0] ** 2) - x[1]) * x[0], -20 * (x[0] ** 2 - x[1])])
-
-    def HessianFR(self, x):
-        return np.array([[2 + 120 * x[0] - 40 * x[1] ** 2, -40 * x[0]], [-40 * x[0], 20]])
+    def HessianG(self, x):
+        return np.array([[4 * (x[0] ** 2 + x[1] - 11) + 8 * x[0] ** 2 + 2, 4 * x[0] + 4 * x[1]], [4 * x[0] + 4 * x[1], 4 * (x[0] + x[1] ** 2 - 7) + 8 * x[1] ** 2 + 2]])
